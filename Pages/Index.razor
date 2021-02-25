@@ -1,7 +1,44 @@
-﻿@page "/"
+﻿@*--The starting page--*@
 
-<h1>Hello, world!</h1>
+@page "/"
 
-Welcome to your new app.
+@using DynamicDatabase.Interfaces
+@using DynamicDatabase.Data
+@inject NavigationManager NavMan
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+<div style="width: 300px; margin: auto; padding-top: 20px">
+    <label style="font-size: 20px; font-style: italic">Indtast adgangskode</label>
+    <input class="form-control" type="password" maxlength="30" style="font-size: 20px; box-shadow: inset 2px 2px 5px #0005" @bind="InputtedPassword" />
+    @if (PasswordError == true)
+    {
+        <div style="height: 40px; color: red; font-size: 20px; font-style: italic">*Forkert adgangskode!</div>
+    }
+    else
+    {
+        <div style="height: 40px"></div>
+    }
+    <div style="display: flex; justify-content: center">
+        <button @onclick="ValidateLogin">Log på</button>
+    </div>
+</div>
+
+@code
+{
+    public string InputtedPassword { get; set; } = "";
+    public bool PasswordError { get; set; }
+
+    protected override void OnInitialized()
+    {
+        InputtedPassword = "";
+        base.OnInitialized();
+    }
+
+    private async Task ValidateLogin()
+    {
+        IHashing hash = new HashingSHA256();
+        string hashedPassword = hash.GenerateHash(InputtedPassword);
+
+        //rest of code
+    }
+}
